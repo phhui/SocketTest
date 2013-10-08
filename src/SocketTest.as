@@ -38,10 +38,21 @@ package
 		{
 			if(e.keyCode!=13)return;
 			if(txt_input.text.length<1)return;
-			SocketServer.send(txt_input.text);
+			var arr:Array=[];//=txt_input.text.split(',');
+			arr.push(111);
+			arr.push(9999);
+			arr.push("aa");
+			arr.push(9998);
+			arr.push(9999);
+			arr.push("bbbbb");
+			arr.push("cccccccc");
+			arr.push(111111);
+			arr.push(222222);
+			arr.push(333333);
+			SocketServer.send(arr);
 		}
 		private function contact(str:String):void{
-			txt_output.htmlText+=str+"\r\n";
+			txt_output.htmlText+=str+"\n";
 		}
 	}
 }

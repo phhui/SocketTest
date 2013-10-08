@@ -30,22 +30,51 @@ package
 		{
 			con("未正确设置安全策略文件"+e.text+"\n注意：\n1、返回的策略文件IP和端口要正确。\n2、返回的策略文件结尾要加\\0否则无法正常解析");
 		}
-		static public function send(str:String):void{
+		static public function send(arr:Array):void{
 			if(!link)return;
 			var byte:ByteArray=new ByteArray();
-			byte.writeUTFBytes(str);
+			writeByte(arr,byte);
+			tracebyte(byte);
 			sock.writeBytes(byte);
 			sock.flush();
-			//writeByte(byte);
-			con("发送:"+str);
+			con("发送:"+arr.toString());
 		}
-		static private function writeByte(b:ByteArray):void{
-			var res:String="";
-			var n:int=b.length;
-			for(var i:int=0;i<n;i++){
-				res+=b[i]+" ";
+		static private function writeByte(obj:*,byte:ByteArray):void{
+			var type:String=typeof(obj);
+			type=type.toLocaleLowerCase();
+			switch(type){
+				case "string":
+					byte.writeUTF(String(obj));
+					break;
+				case "int":
+					byte.writeInt(int(obj));
+					break;
+				case "double":
+					byte.writeDouble(Number(obj));
+					break;
+				case "number":
+					byte.writeInt(int(obj));
+					break;
+				case "byte":
+					byte.writeByte(int(obj));
+					break;
+				default:
+					if(obj is Array){
+						var n:int=obj.length;
+						for(var i:int=0;i<n;i++){
+							writeByte(obj[i],byte);
+						}
+					}
+					break;
 			}
-			con(res);
+		}
+		static private function tracebyte(by:ByteArray):void{
+			var n:int=by.length;
+			var s:String="";
+			for(var i:int=0;i<n;i++){
+				s+=by[i]+" ";
+			}
+			con(s);
 		}
 		protected static function socketClose(e:Event):void
 		{
